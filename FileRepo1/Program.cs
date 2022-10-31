@@ -1,4 +1,6 @@
 using FileRepo1.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 
 namespace FileRepo1
 {
@@ -9,12 +11,16 @@ namespace FileRepo1
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddMicrosoftIdentityWebApi(builder.Configuration);
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
             builder.Services.Configure<AppRegistrationInformation>(builder.Configuration.GetSection("AppRegistration"));
+            
 
             var app = builder.Build();
 
@@ -27,6 +33,7 @@ namespace FileRepo1
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
